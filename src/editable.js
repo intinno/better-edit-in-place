@@ -138,8 +138,9 @@ var Editable = Class.create({
         var pars = this.editForm.serialize(true);
         var url = this.editForm.readAttribute('action');
         this.editForm.disable();
-        new Ajax.Request(url + ".json", {
+        new Ajax.Request(url , {
             method: 'put',
+            requestHeaders: {Accept: 'application/json'},
             parameters: pars,
             onSuccess: function(transport) {
                 var json = transport.responseText.evalJSON();
@@ -167,8 +168,16 @@ var Editable = Class.create({
                 this.cancel();
             }.bind(this),
             onFailure: function(transport) {
+                this.editForm.enable();
                 this.cancel();
-                alert("Your change could not be saved.");
+                var errors = transport.responseText.evalJSON();
+                if (errors.length > 0) {
+                  for (var i =0; i < errors.length; i++){
+                    alert(errors[i][1]);
+                  }
+                } else {
+                  alert("Your changes could not be saved.")
+                }
             }.bind(this),
             onLoading: this.onLoading.bind(this),
             onComplete: this.onComplete.bind(this)

@@ -14,9 +14,11 @@ module Nakajima
       classes << 'editable' if classes.empty?
       options[:class] = classes.uniq.join(' ')
 
-      content_tag(options.delete(:tag), record.send(field), options)
+      content_tag(options.delete(:tag), record.send(field), options) + 
+        javascript_tag("new Editable('#{options[:id]}')")
     end
   end  
 end
 
 ActionView::Base.send :include, Nakajima::BetterEditInPlace
+ActionController::Base.send :include, BetterEditInPlace
