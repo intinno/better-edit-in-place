@@ -3,6 +3,12 @@ h1. Better Edit in Place
 The default "in_place_editing" plugin for Rails is disappointing. This is my
 solution.
 
+h3. New Features in this Clone
+
+* support for generating controller methods
+* support for handling validations
+* support for handling the case when the value of the element is null
+
 h3. Features
 
 * Support for nested resources
@@ -19,6 +25,7 @@ h3. Features
 ** class submit and cancel buttons
 ** custom functions to be called on Ajax.Request onLoading and onComplete events 
    i.e. to set up a spinner.
+
 
 The better-edit-in-place script makes it easy to create AJAX edit-in-place
 fields in a RESTful web app. Note that if your approach isn't RESTful, 
