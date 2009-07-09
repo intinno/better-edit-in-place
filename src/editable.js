@@ -2,8 +2,9 @@
 // http://github.com/nakajima/nakatype/wikis/better-edit-in-place-editable-js
 
 var Editable = Class.create({
-    initialize: function(element, options) {
+    initialize: function(element, sudoElement, options) {
         this.element = $(element);
+        this.sudoElement = $(sudoElement);
         Object.extend(this, options);
 
         // Set default values for options
@@ -121,12 +122,14 @@ var Editable = Class.create({
     // Sets up event handles for editable.
     setupBehaviors: function() {
         this.element.observe('click', this.edit.bindAsEventListener(this));
+        this.sudoElement.observe('click', this.edit.bindAsEventListener(this));
         if (this.saveInput) this.editForm.observe('submit', this.save.bindAsEventListener(this));
         if (this.cancelLink) this.cancelLink.observe('click', this.cancel.bindAsEventListener(this));
     },
 
     // Event Handler that activates form and hides element.
     edit: function(event) {
+        this.sudoElement.hide();
         this.element.hide();
         this.editForm.show();
         this.editField.element.activate ? this.editField.element.activate() : this.editField.element.focus();
@@ -162,6 +165,7 @@ var Editable = Class.create({
                 this.editField.element.value = this.value;
                 this.element.update(this.value);
                 this.editForm.enable();
+                this.changeSudoAfterSave(value);
                 if (Editable.afterSave) {
                     Editable.afterSave(this);
                 }
@@ -190,6 +194,7 @@ var Editable = Class.create({
     // Event handler that restores original editable value and hides form.
     cancel: function(event) {
         this.element.show();
+        this.sudoElement.show();
         this.editField.element.value = this.value;
         this.editForm.hide();
         if (event) {
@@ -206,6 +211,14 @@ var Editable = Class.create({
         catch(e) {
             delete(this);
         }
+    },
+
+    changeSudoAfterSave: function(value) {
+      if (value == "" ) {
+        this.sudoElement.update("Not Set")
+      } else {
+        this.sudoElement.update("")
+      }
     }
 });
 

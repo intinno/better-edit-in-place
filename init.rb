@@ -14,8 +14,22 @@ module Nakajima
       classes << 'editable' if classes.empty?
       options[:class] = classes.uniq.join(' ')
 
-      content_tag(options.delete(:tag), record.send(field), options) + 
-        javascript_tag("new Editable('#{options[:id]}')")
+      sudoElement(options, record.send(field)) +
+        content_tag(options.delete(:tag), record.send(field), options) +
+        javascript_tag("new Editable('#{options[:id]}', '#{getSudoId(options[:id])}')")
+    end
+
+    def sudoElement(options, value)
+      unless value.blank?
+        value = nil
+      else
+        value = "Not Set"
+      end
+      content_tag(:span, value, :id => getSudoId(options[:id])) 
+    end
+
+    def getSudoId(value)
+      return "sudo_" + value
     end
   end  
 end
