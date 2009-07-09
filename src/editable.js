@@ -2,9 +2,10 @@
 // http://github.com/nakajima/nakatype/wikis/better-edit-in-place-editable-js
 
 var Editable = Class.create({
-    initialize: function(element, sudoElement, options) {
+    initialize: function(element, sudoElement, editLink, options) {
         this.element = $(element);
         this.sudoElement = $(sudoElement);
+        this.editLink = $(editLink);
         Object.extend(this, options);
 
         // Set default values for options
@@ -123,12 +124,14 @@ var Editable = Class.create({
     setupBehaviors: function() {
         this.element.observe('click', this.edit.bindAsEventListener(this));
         this.sudoElement.observe('click', this.edit.bindAsEventListener(this));
+        this.editLink.observe('click', this.edit.bindAsEventListener(this));
         if (this.saveInput) this.editForm.observe('submit', this.save.bindAsEventListener(this));
         if (this.cancelLink) this.cancelLink.observe('click', this.cancel.bindAsEventListener(this));
     },
 
     // Event Handler that activates form and hides element.
     edit: function(event) {
+        this.editLink.hide();
         this.sudoElement.hide();
         this.element.hide();
         this.editForm.show();
@@ -195,6 +198,7 @@ var Editable = Class.create({
     cancel: function(event) {
         this.element.show();
         this.sudoElement.show();
+        this.editLink.show();
         this.editField.element.value = this.value;
         this.editForm.hide();
         if (event) {

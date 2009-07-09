@@ -8,6 +8,7 @@ module Nakajima
       options[:tag] ||= :span
       options[:url] ||= url_for(resource)
       options[:rel] ||= options.delete(:url)
+      options[:title] ||= "Click to Edit"
       options.delete(:url) # Just in case it wasn't cleared already
 
       classes = options[:class].split(' ') rescue []
@@ -15,8 +16,9 @@ module Nakajima
       options[:class] = classes.uniq.join(' ')
 
       sudoElement(options, record.send(field)) +
-        content_tag(options.delete(:tag), record.send(field), options) +
-        javascript_tag("new Editable('#{options[:id]}', '#{getSudoId(options[:id])}')")
+        content_tag(options.delete(:tag), record.send(field), options) + "  " +
+        link_to("edit", "##{options[:id]}", :class => "red-text", :id => "#{editLinkId(options[:id])}") +
+        javascript_tag("new Editable('#{options[:id]}', '#{getSudoId(options[:id])}', '#{editLinkId(options[:id])}')")
     end
 
     def sudoElement(options, value)
@@ -25,11 +27,16 @@ module Nakajima
       else
         value = "Not Set"
       end
-      content_tag(:span, value, :id => getSudoId(options[:id])) 
+      content_tag(:span, value, 
+        :id => getSudoId(options[:id]), :title => "Click to Edit", :class => "editable") 
     end
 
     def getSudoId(value)
       return "sudo_" + value
+    end
+
+    def editLinkId(value)
+      return "edit_link_" + value
     end
   end  
 end
